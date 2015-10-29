@@ -2,7 +2,7 @@
 import unittest
 
 import owlready
-from owlready import *
+from .. import *
 
 onto_path.append(os.path.dirname(__file__))
 
@@ -266,6 +266,6 @@ class OntoTest(unittest.TestCase):
     assert     onto.a_pour_b.is_functional_for(onto.A1)
     assert not onto.a_pour_b.is_functional_for(onto.A2)
     
-    
+
 if __name__ == '__main__': unittest.main()
   

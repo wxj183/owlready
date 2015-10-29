@@ -17,43 +17,79 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import os, os.path, sys, glob
+#import os, os.path, sys, glob
+#
+#HERE = os.path.dirname(sys.argv[0]) or "."
+#
+#if len(sys.argv) <= 1: sys.argv.append("install")
+#
+#
+#import distutils.core, distutils.sysconfig
+#if ("upload_docs" in sys.argv) or ("build_sphinx" in sys.argv): import setuptools
+#
+#
+#distutils.core.setup(
+#  name         = "Owlready",
+#  version      = "0.3",
+#  license      = "LGPLv3+",
+#  description  = "A module for ontology-oriented programming in Python: load OWL 2.0 ontologies as Python objects, modify them, save to OWL XML, and perform reasoning via HermiT. It can also generate dialog boxes for editing instances.",
+#  long_description = open(os.path.join(HERE, "README.rst")).read(),
+#  
+#  author       = "Lamy Jean-Baptiste (Jiba)",
+#  author_email = "jibalamy@free.fr",
+#  url          = "https://bitbucket.org/jibalamy/owlready",
+#  classifiers  = [
+#    "Development Status :: 4 - Beta",
+#    "Intended Audience :: Developers",
+#    "Intended Audience :: Information Technology",
+#    "Intended Audience :: Science/Research",
+#    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+#    "Operating System :: OS Independent",
+#    "Programming Language :: Python :: 3",
+#    "Programming Language :: Python :: 3.3",
+#    "Programming Language :: Python :: 3.4",
+#    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+#    "Topic :: Software Development :: User Interfaces",
+#    "Topic :: Software Development :: Libraries :: Python Modules",
+#    ],
+#  
+#  package_dir  = {"owlready" : "."},
+#  packages     = ["owlready"],
+#  package_data = {"owlready" : ["owlready_ontology.owl", "hermit/*.*", "hermit/org/semanticweb/HermiT/cli/*", "icons/*", "locale/fr/LC_MESSAGES/*", "locale/en/LC_MESSAGES/*"]}
+#  )
 
-HERE = os.path.dirname(sys.argv[0]) or "."
 
-if len(sys.argv) <= 1: sys.argv.append("install")
-
-
-import distutils.core, distutils.sysconfig
-if ("upload_docs" in sys.argv) or ("build_sphinx" in sys.argv): import setuptools
+import os
+from setuptools import setup
+from setuptools import find_packages
+#import subprocess as subprocess
 
 
-distutils.core.setup(
-  name         = "Owlready",
-  version      = "0.3",
-  license      = "LGPLv3+",
-  description  = "A module for ontology-oriented programming in Python: load OWL 2.0 ontologies as Python objects, modify them, save to OWL XML, and perform reasoning via HermiT. It can also generate dialog boxes for editing instances.",
-  long_description = open(os.path.join(HERE, "README.rst")).read(),
-  
-  author       = "Lamy Jean-Baptiste (Jiba)",
-  author_email = "jibalamy@free.fr",
-  url          = "https://bitbucket.org/jibalamy/owlready",
-  classifiers  = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.3",
-    "Programming Language :: Python :: 3.4",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Software Development :: User Interfaces",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    ],
-  
-  package_dir  = {"owlready" : "."},
-  packages     = ["owlready"],
-  package_data = {"owlready" : ["owlready_ontology.owl", "hermit/*.*", "hermit/org/semanticweb/HermiT/cli/*", "icons/*", "locale/fr/LC_MESSAGES/*", "locale/en/LC_MESSAGES/*"]}
-  )
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+
+setup(name = "owlready",
+      version = "0.3",
+      license = "LGPLv3+",
+      description = "A module for ontology-oriented programming in Python: load OWL 2.0 ontologies as Python objects, modify them, save to OWL XML, and perform reasoning via HermiT. It can also generate dialog boxes for editing instances.",
+      long_description = read("README.rst"),
+      author="Lamy Jean-Baptiste (Jiba)",
+      author_email="jibalamy@free.fr",
+      url="https://bitbucket.org/jibalamy/owlready",
+      classifiers =["Development Status :: 4 - Beta",
+                      "Intended Audience :: Developers",
+                      "Intended Audience :: Information Technology",
+                      "Intended Audience :: Science/Research",
+                      "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+                      "Operating System :: OS Independent",
+                      "Programming Language :: Python :: 3",
+                      "Programming Language :: Python :: 3.3",
+                      "Programming Language :: Python :: 3.4",
+                      "Topic :: Scientific/Engineering :: Artificial Intelligence",
+                      "Topic :: Software Development :: User Interfaces",
+                      "Topic :: Software Development :: Libraries :: Python Modules"],
+      packages=find_packages(),
+      include_package_data=True,
+      #package_data={"owlready" : ["owlready_ontology.owl", "hermit/*.*", "hermit/org/semanticweb/HermiT/cli/*", "icons/*", "locale/fr/LC_MESSAGES/*", "locale/en/LC_MESSAGES/*"]}
+)

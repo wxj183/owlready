@@ -30,7 +30,8 @@ import datetime
 JAVA_EXE = "java"
 
 _HERE = os.path.dirname(__file__)
-_HERMIT_CLASSPATH = os.pathsep.join([os.path.join(_HERE, "hermit"), os.path.join(_HERE, "hermit", "HermiT.jar")])
+_HERMIT_PATH = os.path.abspath(os.path.join(_HERE, "..", "hermit"))
+_HERMIT_CLASSPATH = os.pathsep.join([_HERMIT_PATH, os.path.join(_HERMIT_PATH, "HermiT.jar")])
 
 # For compiling and running HermiT manually:
 #   cd /home/jiba/src/owlready/hermit

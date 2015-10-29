@@ -10,8 +10,8 @@ graft test
 graft hermit
 graft locale
 
-include ./LICENSE.txt
-include ./README.rst
+include LICENSE.txt
+include README.rst
 
 
 
