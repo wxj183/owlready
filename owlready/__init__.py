@@ -21,6 +21,7 @@ VERSION = "0.3"
 
 
 import sys, os, types, tempfile, subprocess, weakref, re, urllib.request, warnings
+from urllib.error import HTTPError
 from io import StringIO
 from collections import defaultdict, OrderedDict
 from xml.sax.saxutils import escape
@@ -124,15 +125,19 @@ def _open_onto_file(base_iri, name, mode = "r", only_local = False):
   for dir in onto_path:
     filename = os.path.join(dir, "%s.owl" % name)
     if os.path.exists(filename): return open(filename, mode)
-  if (mode == "r") and not only_local: return urllib.request.urlopen(base_iri)
+  if (mode == "r") and not only_local:
+      try:
+          return urllib.request.urlopen(base_iri)
+      except HTTPError:
+          raise ValueError("Cannot import ontology %s" % name)
   if (mode == "w"): return open(os.path.join(onto_path[0], "%s.owl" % name), "w")
   raise FileNotFoundError
 
 ONTOLOGIES = {}
 
-def get_ontology(base_iri):
+def get_ontology(base_iri, force_non_dot_owl_iri=False):
   if base_iri in ONTOLOGIES: return ONTOLOGIES[base_iri]
-  return Ontology(base_iri)
+  return Ontology(base_iri, force_non_dot_owl_iri=force_non_dot_owl_iri)
 
 def get_object(iri, type = None, parser = 2):
   if not iri.startswith("http:") or iri.startswith("file:"): raise ValueError
@@ -164,8 +169,9 @@ def get_object(iri, type = None, parser = 2):
 DEFAULT_ONTOLOGY = None
 
 class Ontology(object):
-  def __init__(self, base_iri, force_non_dot_owl_iri = False):
-    if base_iri.endswith("/") or base_iri.endswith("#"): raise ValueError("Ontology IRI must not ends with '/' or '#'; please remove it.")
+  def __init__(self, base_iri, force_non_dot_owl_iri=False):
+    if base_iri.endswith("/") or base_iri.endswith("#"):
+        raise ValueError("Ontology IRI must not ends with '/' or '#'; please remove it.")
     self.base_iri              = base_iri
     self.name                  = base_iri.rsplit("/", 1)[-1]
     if self.name.endswith(".owl"): self.name = self.name[:-4]
@@ -176,9 +182,10 @@ class Ontology(object):
     self.all_disjoints         = []
     self.instances             = []
     self.loaded                = False
-    if self.base_iri in ONTOLOGIES: raise ValueError("An ontology named '%s' already exists!" % self.base_iri)
+    if self.base_iri in ONTOLOGIES:
+        raise ValueError("An ontology named '%s' already exists!" % self.base_iri)
     ONTOLOGIES[self.base_iri]  = IRIS[self.base_iri] = self
-    print("* Owlready * Creating new ontology %s <%s>." % (self.name, self.base_iri), file = sys.stderr)
+    print("* Owlready * Creating new ontology %s <%s>." % (self.name, self.base_iri), file=sys.stderr)
     if (not base_iri.endswith(".owl")) and (not force_non_dot_owl_iri):
       warnings.warn("Ontology IRI '%s' does not ends with '.owl' as expected." % base_iri, OwlReadyOntologyIRIWarning, 3)
       
@@ -193,7 +200,8 @@ class Ontology(object):
     self.loaded = True
     print("* Owlready *     ...loading ontology %s from %s..." % (self.name, getattr(f, "name", "") or getattr(f, "url", "???")), file = sys.stderr)
     import owlready.owl_xml_parser
-    return owlready.owl_xml_parser.parse(f, self)
+    loaded_ontology = owlready.owl_xml_parser.parse(f, self)
+    return loaded_ontology
 
   def save(self, filename = None):
     owl = to_owl(self)
